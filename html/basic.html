@@ -9,11 +9,24 @@
 </style>
 </head>
 <body>
+	<p>
+		<label>Drawing tool: <select id="dtool">
+				<option value="line">Line</option>
+				<option value="rect">Rectangle</option>
+				<option value="pencil">Pencil</option>
+		</select></label>
+	</p>
+	<div id="container">
+<!-- 		<canvas id="imageView" width="400" height="300"></canvas> -->
+		<canvas id="myCanvas" width="1024" height="500"></canvas>
+	</div>
 
-<!-- <svg id="visualisation" width="1000" height="500"></svg> -->
-<canvas id="canvas" width="578" height="400"></canvas>
-<canvas id="myCanvas" width="1024" height="500"></canvas>
-<script type="text/javascript" src="../javascript/basic.js"></script>
+	<!-- <svg id="visualisation" width="1000" height="500"></svg> -->
+	<!-- 	<canvas id="canvas" width="578" height="400"></canvas> -->
+	<script type="text/javascript" src="../javascript/basic.js"></script>
+	<script type="text/javascript" src="../javascript/drawing.js"></script>
+
+
 
 </body>
 </html>

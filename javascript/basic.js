@@ -136,8 +136,7 @@ var zoomOverlay = vis.append("rect")
 //function zoom2() {
 //  svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
 //}
-  
-
+ 
 var c=document.getElementById("myCanvas");
 var ctx=c.getContext("2d");
 var imgData=ctx.createImageData(1024,500);
@@ -247,9 +246,3 @@ function deleteLastLine() {
 //	    context.putImageData(imageData, 0, 0);
 //  };
 
-
-var encodedData = window.btoa([]);
-var decodedData = window.atob(encodedData);
-
-console.log(encodedData)
-console.log(decodedData.test)
