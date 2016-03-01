@@ -23,15 +23,15 @@ var HEIGHT = 500;
 var MARGINS = {top : 20, right : 20, bottom : 20, left : 50};
 
 var xScale = d3.scale.linear()
-.range([ MARGINS.left, 
+.range([ MARGINS.left,
          WIDTH - MARGINS.right ])
-.domain([ d3.min(lineData, function(d) {return d.x;}), 
+.domain([ d3.min(lineData, function(d) {return d.x;}),
           d3.max(lineData, function(d) {return d.x;}) ]);
 
 var yScale = d3.scale.linear()
-.range([ HEIGHT - MARGINS.top, 
+.range([ HEIGHT - MARGINS.top,
        MARGINS.bottom ])
-.domain([ d3.min(lineData, function(d) {return d.y;}), 
+.domain([ d3.min(lineData, function(d) {return d.y;}),
         d3.max(lineData, function(d) {return d.y;}) ]);
 
 var xAxis = d3.svg.axis()
@@ -78,7 +78,7 @@ vis.selectAll("rect").data(lineData).enter().append("rect")
   .attr('fill', 'grey')   // fills the bar with grey color
   .attr("clip-path", "url(#clip)")
   .attr('class','datarect')
-  
+
 var zoomOverlay = vis.append("rect")
 .attr("width", WIDTH)
 .attr("height", HEIGHT)
@@ -88,13 +88,13 @@ var zoomOverlay = vis.append("rect")
 //.on("touchstart.zoom", null)
 //.on("touchmove.zoom", null)
 //.on("touchend.zoom", null);
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+
 //var width = 500,
 //    height = 500;
 //
@@ -136,7 +136,7 @@ var zoomOverlay = vis.append("rect")
 //function zoom2() {
 //  svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
 //}
- 
+
 var c=document.getElementById("myCanvas");
 var ctx=c.getContext("2d");
 var imgData=ctx.createImageData(1024,500);
@@ -202,7 +202,7 @@ function deleteLastLine() {
 //  img.style.display = 'none';
 //  var imageData = ctx.getImageData(0,0,canvas.width, canvas.height);
 //  var data = imageData.data;
-//  
+//
 //  var invert = function() {
 //    for (var i = 0; i < data.length; i += 4) {
 //      data[i]     = 255 - data[i];     // red
@@ -245,4 +245,3 @@ function deleteLastLine() {
 //	    }
 //	    context.putImageData(imageData, 0, 0);
 //  };
-
