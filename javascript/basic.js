@@ -143,7 +143,7 @@ var imgData=ctx.createImageData(1024,500);
 var iLine = 1;
 
 //addLine();
-//shiftImage()
+shiftImage()
 
 function addLine() {
 	console.log('adding line ' + iLine)

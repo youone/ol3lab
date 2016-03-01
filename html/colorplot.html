@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<!-- <script src="http://d3js.org/d3.min.js"></script> -->
+<script src="../javascript/d3/d3.min.js"></script>
+<script type="text/javascript" src="\Users\johan\git\ol3lab\javascript\firebug-lite\build\firebug-lite-debug.js"></script>
+<!-- <script src="/Users/johan/git/ol3lab/javascript/d3/d3.csv.js"></script> -->
+<!-- <script src="/Users/johan/git/ol3lab/javascript/d3/d3.time.js"></script> -->
+<style type="text/css">
+      #container { position: relative; }
+      #imageView { border: 1px solid #000; }
+      #imageTemp { position: absolute; top: 1px; left: 1px; }
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #fff;
+}
+
+</style>
+</head>
+<body>
+<svg class="output" width="500" height="500"></svg>
+
+
+<script>
+
+try {
+var max_value = 9;
+
+// This function converts a 0->max_value number to a rgb string for the heatmap
+function get_rgb(d) {
+  var ratio = 2 * (d/max_value)
+  var r = Math.floor(Math.max(0, 255*(ratio - 1)))
+  var b = Math.floor(Math.max(0, 255*(1 - ratio)))
+  var g = 255 - b - r
+
+  return "rgb(" + r + "," + g + "," + b + ")";
+}
+
+var svg = d3.select(".output")
+
+var mydata = [
+   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+   0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0, 0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,
+   0,0,0,0,1,1,1,2,2,2,2,2,1,1,1,0,0,0,0,0, 0,0,0,0,1,1,1,2,2,2,2,2,1,1,1,0,0,0,0,0,
+   0,0,0,1,1,2,2,3,3,3,3,3,2,2,1,1,0,0,0,0, 0,0,0,1,1,2,2,3,3,3,3,3,2,2,1,1,0,0,0,0,
+   0,0,1,1,2,3,3,3,4,4,4,3,3,3,2,1,1,0,0,0, 0,0,1,1,2,3,3,3,4,4,4,3,3,3,2,1,1,0,0,0,
+   0,0,1,1,2,3,4,4,4,5,4,4,4,3,2,2,1,0,0,0, 0,0,1,1,2,3,4,4,4,5,4,4,4,3,2,2,1,0,0,0,
+   0,1,1,2,3,3,4,5,5,6,5,5,4,4,3,3,2,1,0,0, 0,1,1,2,3,3,4,5,5,6,5,5,4,4,3,3,2,1,0,0,
+   0,1,2,2,3,4,4,5,6,7,6,5,5,4,4,3,2,1,0,0, 0,1,2,2,3,4,4,5,6,7,6,5,5,4,4,3,2,1,0,0,
+   0,1,2,3,3,4,5,5,6,8,7,6,5,5,4,3,2,1,0,0, 0,1,2,3,3,4,5,5,6,8,8,6,5,5,4,3,2,1,0,0,
+   0,1,2,3,4,4,5,6,6,7,7,6,5,5,4,3,2,1,0,0, 0,1,2,3,4,4,5,6,6,7,6,6,5,5,4,3,2,1,0,0,
+   0,1,2,3,4,4,5,5,6,6,6,5,5,4,4,3,2,1,0,0, 0,1,2,3,4,4,5,5,6,6,6,6,5,4,4,3,2,1,0,0,
+   0,1,2,3,3,4,4,5,5,6,5,5,4,4,3,3,2,1,0,0, 0,1,2,3,3,4,4,5,5,6,5,5,5,4,3,3,2,1,0,0,
+   0,1,1,2,3,3,4,4,5,5,5,4,4,4,3,2,1,1,0,0, 0,1,1,2,3,3,4,4,5,5,5,4,4,4,3,2,1,1,0,0,
+   0,0,1,1,2,3,3,4,4,4,4,4,3,3,3,2,1,0,0,0, 0,0,1,1,2,3,3,4,4,4,4,4,3,3,3,2,1,0,0,0,
+   0,0,1,1,2,2,3,3,3,4,4,3,3,2,2,1,1,0,0,0, 0,0,1,1,2,2,3,3,3,4,4,3,3,2,2,1,1,0,0,0,
+   0,0,0,1,1,2,2,2,3,3,3,2,2,2,1,1,0,0,0,0, 0,0,0,1,1,2,2,2,3,3,3,2,2,2,1,1,0,0,0,0,
+   0,0,0,0,1,1,1,2,2,2,2,2,1,1,1,0,0,0,0,0, 0,0,0,0,1,1,1,2,2,2,2,2,1,1,1,0,0,0,0,0,
+   0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0, 0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,
+   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+   0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0, 0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,
+   0,0,0,0,1,1,1,2,2,2,2,2,1,1,1,0,0,0,0,0, 0,0,0,0,1,1,1,2,2,2,2,2,1,1,1,0,0,0,0,0,
+   0,0,0,1,1,2,2,3,3,3,3,3,2,2,1,1,0,0,0,0, 0,0,0,1,1,2,2,3,3,3,3,3,2,2,1,1,0,0,0,0,
+   0,0,1,1,2,3,3,3,4,4,4,3,3,3,2,1,1,0,0,0, 0,0,1,1,2,3,3,3,4,4,4,3,3,3,2,1,1,0,0,0,
+   0,0,1,1,2,3,4,4,4,5,4,4,4,3,2,2,1,0,0,0, 0,0,1,1,2,3,4,4,4,5,4,4,4,3,2,2,1,0,0,0,
+   0,1,1,2,3,3,4,5,5,6,5,5,4,4,3,3,2,1,0,0, 0,1,1,2,3,3,4,5,5,6,5,5,4,4,3,3,2,1,0,0,
+   0,1,2,2,3,4,4,5,6,7,6,5,5,4,4,3,2,1,0,0, 0,1,2,2,3,4,4,5,6,7,6,5,5,4,4,3,2,1,0,0,
+   0,1,2,3,3,4,5,5,7,8,7,6,5,5,4,3,2,1,0,0, 0,1,2,3,3,4,5,5,7,8,8,6,5,5,4,3,2,1,0,0,
+   0,1,2,3,4,4,5,6,6,7,7,6,5,5,4,3,2,1,0,0, 0,1,2,3,4,4,5,6,6,7,6,6,5,5,4,3,2,1,0,0,
+   0,1,2,3,4,4,5,5,6,6,6,6,5,4,4,3,2,1,0,0, 0,1,2,3,4,4,5,5,6,6,6,5,5,4,4,3,2,1,0,0,
+   0,1,2,3,3,4,4,5,5,6,5,5,4,4,3,3,2,1,0,0, 0,1,2,3,3,4,4,5,5,6,5,5,4,4,3,3,2,1,0,0,
+   0,1,1,2,3,3,4,4,5,5,5,4,4,4,3,2,1,1,0,0, 0,1,1,2,3,3,4,4,5,5,5,4,4,4,3,2,1,1,0,0,
+   0,0,1,1,2,3,3,4,4,4,4,4,3,3,3,2,1,0,0,0, 0,0,1,1,2,3,3,4,4,4,4,4,3,3,3,2,1,0,0,0,
+   0,0,1,1,2,2,3,3,3,4,4,3,3,2,2,1,1,0,0,0, 0,0,1,1,2,2,3,3,3,4,4,3,3,2,2,1,1,0,0,0,
+   0,0,0,1,1,2,2,2,3,3,3,2,2,2,1,1,0,0,0,0, 0,0,0,1,1,2,2,2,3,3,3,2,2,2,1,1,0,0,0,0,
+   0,0,0,0,1,1,1,2,2,2,2,2,1,1,1,0,0,0,0,0, 0,0,0,0,1,1,1,2,2,2,2,2,1,1,1,0,0,0,0,0,
+   0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0, 0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,
+   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+
+]
+
+var lineData = [{
+	  x: 1,
+	  y: 5
+	}, {
+	  x: 20,
+	  y: 20
+	}, {
+	  x: 40,
+	  y: 10
+	}, {
+	  x: 60,
+	  y: 40
+	}, {
+	  x: 80,
+	  y: 5
+	}, {
+	  x: 100,
+	  y: 60
+	}];
+
+
+var barData = [{
+    'x': 1,
+    'y': 5
+  }, {
+    'x': 20,
+    'y': 20
+  }, {
+    'x': 40,
+    'y': 10
+  }, {
+    'x': 60,
+    'y': 40
+  }, {
+    'x': 80,
+    'y': 5
+  }, {
+    'x': 100,
+    'y': 60
+  }];
+
+// var lineFunc = d3.svg.line()
+// .x(function(d) {
+//   return xRange(d.x);
+// })
+// .y(function(d) {
+//   return yRange(d.y);
+// })
+// .interpolate('linear');
+
+//var selection = svg.selectAll("rect").data(mydata)
+var selection = svg.selectAll().data(mydata)
+
+// console.log('hej')
+console.log(selection)
+
+var cellsize = 10;
+
+var x_dim = 40;
+var y_dim = 40;
+
+// d3.tsv("../javascript/data.tsv", type, function(error, data) {
+// 	  if (error) throw error;
+// 	  });
+
+selection.enter().append("rect")
+  .attr("x", function(d,i) { return (i%x_dim)*cellsize; })
+  .attr("y", function(d,i) { return (Math.floor(i/x_dim))*cellsize; })
+  .attr("width", cellsize)
+  .attr("height", cellsize)
+  .style("fill", function(d) {return get_rgb(d);})
+  //.call(d3.behavior.zoom().on("zoom", zoom));
+
+  var width = 960, height = 500
+  var svg2 = d3.select("body").append("svg")
+  .datum(mydata)
+  .attr("width", width)
+  .attr("height", height);
+
+  MARGINS = {top: 20, right: 20, bottom: 20, left: 50};
+  xRange = d3.scale.ordinal().rangeRoundBands([MARGINS.left, 400 - MARGINS.right], 0.1).domain(barData.map(function (d) {
+      return d.x;
+    }));
+  yRange = d3.scale.linear().range([400 - MARGINS.top, MARGINS.bottom]).domain([0,
+      d3.max(barData, function (d) {
+        return d.y;
+      })
+    ]);
+
+  var x = d3.scale.linear()
+  .domain([0, 100])
+  .range([0, 400]);
+  var y = d3.scale.linear()
+  .domain([0, 100])
+  .range([0, 400]);
+
+  var xAxis = d3.svg.axis()
+  .scale(x)
+  .orient("bottom")
+  .tickSize(-400)
+  //.tickValues([2,3,4])
+  //.tickFormat(function(d) { return d === .5 ? formatPercent(d) : formatNumber(100 * d); });
+  var yAxis = d3.svg.axis()
+  .scale(y)
+  .orient("right")
+  .tickSize(-400)
+
+  var zoom = d3.behavior.zoom()
+  .x(x)
+  .y(y)
+  .scaleExtent([1, 100])
+  .on("zoom", zoomed);
+
+  var g = svg2.append("g")
+  .attr("class", "key")
+  .call(zoom);
+  //.attr("transform", "translate(" + (width - 240) / 2 + "," + height / 2 + ")");
+
+//   g.selectAll("rect").data(mydata).enter().append("rect")
+//   .attr("x", function(d,i) { return (i%x_dim)*cellsize; })
+//   .attr("y", function(d,i) { return (Math.floor(i/x_dim))*cellsize; })
+//   .attr("width", cellsize)
+//   .attr("height", cellsize)
+//   .style("fill", function(d) {return get_rgb(d);})
+
+//   g.selectAll("rect").data(lineData).enter().append('svg:path')
+//   //.attr('d', lineFunc(lineData))
+//    .attr("x", function(d) { return d.x; })
+//    .attr("y", function(d) { return d.y; })
+//   .attr('stroke', 'blue')
+//   .attr('stroke-width', 2)
+//   .attr('fill', 'none');
+
+  g.selectAll('rect').data(barData).enter().append('rect')
+  .attr('x', function (d) {
+    return xRange(d.x);
+  })
+  .attr('y', function (d) {
+    return yRange(d.y);
+  })
+  .attr('width', xRange.rangeBand())
+  .attr('height', function (d) {
+    return ((400 - MARGINS.bottom) - yRange(d.y));
+  })
+  .attr('fill', 'grey');
+
+// }
+
+
+  svg2.append("g")
+  .attr("class", "x axis")
+  .attr("transform", "translate(0," + 400 + ")")
+  .call(xAxis);
+  svg2.append("g")
+  .attr("class", "y axis")
+  .attr("transform", "translate(400," + 0 + ")")
+  .call(yAxis);
+
+//   g.call(xAxis).append("text")
+//   .attr("class", "caption")
+//   //.attr("y", -6)
+//   .text("Percentage of stops that involved force");
+
+}
+
+catch (error){
+	console.error(error);
+}
+
+function zoomed() {
+	  svg2.select(".x.axis").call(xAxis);
+	  svg2.select(".y.axis").call(yAxis);
+	  //svg2.selectAll(".rect").attr("d", rect);
+}
+
+function type(d) {
+	  d.x = d.x;
+	  d.y = d.y;
+	  return d;
+}
+
+</script>
+
+<!-- <svg id="visualisation" width="1000" height="500"></svg> -->
+<!-- <script type="text/javascript" src="..\javascript\barchart.js"></script> -->
+
+
+    <p><label>Drawing tool: <select id="dtool">
+        <option value="line">Line</option>
+        <option value="rect">Rectangle</option>
+        <option value="pencil">Pencil</option>
+    </select></label></p>
+
+<div id="container">
+  <canvas id="imageView" width="400" height="300">
+    <p>Unfortunately, your browser is currently unsupported by our web
+    application.  We are sorry for the inconvenience. Please use one of the
+    supported browsers listed below, or draw the image you want using an
+    offline tool.</p>
+    <p>Supported browsers: <a href="http://www.opera.com">Opera</a>, <a
+      href="http://www.mozilla.com">Firefox</a>, <a
+      href="http://www.apple.com/safari">Safari</a>, and <a
+      href="http://www.konqueror.org">Konqueror</a>.</p>
+  </canvas>
+</div>
+
+<script type="text/javascript" src="../javascript/drawing.js"></script>
+</body>
+</html>
